@@ -188,6 +188,15 @@ def scan_ticker(ticker, spy_ret):
         macd_val, sig_val = compute_macd(close)
         macd_bull = bool(macd_val > sig_val)
 
+        # ── ATR (Average True Range) ─────────────────────────────────────────
+        tr = pd.concat([
+            high - low,
+            (high - close.shift()).abs(),
+            (low - close.shift()).abs()
+        ], axis=1).max(axis=1)
+        atr_14 = safe(tr.rolling(14).mean().iloc[-1])
+        atr_pct = round((atr_14 / price) * 100, 1) if atr_14 and price else 0
+
         # ── VCP / Consolidation ──────────────────────────────────────────────
         vol_5d    = safe(vol.tail(5).mean())
         vol_ratio = safe(vol_5d / avg_vol_20d) if avg_vol_20d else 1.0
@@ -340,6 +349,7 @@ def scan_ticker(ticker, spy_ret):
             "wcr":          wcr,
             "rs_score":     rs_score,
             "ret_1y":       round(ret_1y, 1),
+            "atr_pct":      atr_pct,
             "eps_growth":   eps_growth_p,
             "rev_growth":   rev_growth_p,
             "inst_own":     inst_own_p,
@@ -447,6 +457,17 @@ def generate_report(results, sector, output_path):
         "Defensive, lower upside. Use for portfolio anchoring or when market conditions are uncertain. Not ideal for CAN SLIM breakout plays.",
         tier_c
     )
+
+    # ATR Warnings
+    high_atr_list = [r for r in results if r.get('atr_pct', 0) > 8.0]
+    if high_atr_list:
+        lines.append("---\n## ⚠️ High ATR Warnings (Volatility Risk)")
+        lines.append("*Stocks with Daily ATR > 8%. A standard -8% stop loss is highly likely to be triggered by normal daily noise. Avoid or drastically reduce position size.*\n")
+        lines.append("| Ticker | Price | ATR% | Risk Assessment |")
+        lines.append("| :--- | :--- | :--- | :--- |")
+        for r in high_atr_list[:10]:
+            lines.append(f"| **{r['ticker']}** | ${r['price']:.2f} | {r['atr_pct']}% ⚠️ | Too volatile for standard -8% stop |")
+        lines.append("")
 
     # ZST Sell Signal Warnings
     warnings_list = [r for r in results if r['wcr'] < 40 and r['vol_ratio'] > 1.3]

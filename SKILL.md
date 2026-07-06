@@ -118,6 +118,8 @@ python3 /home/ubuntu/daily_report.py
 ## Trading Rules Summary
 
 - **Buy Rule:** Buy exactly at the Pivot Point on heavy volume (>= 1.5x average). Do not chase extended stocks.
-- **Stop Loss Rule:** Absolute maximum stop loss is -8%. No exceptions.
+- **Stop Loss Rule (M2 Risk Management):** The absolute maximum stop loss for any single trade is -8% from the entry price. However, the total capital at risk on any single trade MUST NOT exceed 1% to 2% of the total account equity. (e.g., If the stop is -8%, position size should be maximum 12.5% to 25% of total capital).
+- **ATR Warning:** If a stock's Average True Range (ATR) is exceptionally high (e.g., daily ATR > 8% of the stock price), issue a prominent warning. High ATR means the stock is too volatile and a standard -8% stop loss will likely be triggered by normal daily noise. Avoid these stocks or drastically reduce position size.
+- **Language Support:** This skill fully supports Korean (한국어). If the user requests analysis in Korean, generate all reports, insights, and trader's plans in natural, professional Korean.
 - **Stage Rule:** Prefer Stage 2 bases. Avoid Stage 4 completely. Treat Stage 3 with extreme caution.
 - **RS Rule:** Only buy stocks with an RS Rating of 80 or higher (preferably 90+).

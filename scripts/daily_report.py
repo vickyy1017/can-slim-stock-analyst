@@ -89,6 +89,15 @@ def get_stock_data(ticker):
         else:
             wcr = 50
 
+        # ATR Calculation
+        tr = pd.concat([
+            high - low,
+            (high - close.shift()).abs(),
+            (low - close.shift()).abs()
+        ], axis=1).max(axis=1)
+        atr_14 = safe(tr.rolling(14).mean().iloc[-1])
+        atr_pct = round((atr_14 / current) * 100, 1) if atr_14 and current else 0
+
         # RS Rating vs SPY
         if SPY_RET_1Y is None:
             SPY_RET_1Y = get_spy_return_1y()
@@ -116,6 +125,7 @@ def get_stock_data(ticker):
             "wcr":        wcr,
             "rs_rating":  rs_rating,
             "rs_label":   rs_label,
+            "atr_pct":    atr_pct,
         }
     except Exception as e:
         return None
@@ -161,6 +171,11 @@ def check_signals(pos, data):
     # RSI warnings
     if rsi > 78:
         signals.append(f"⚠️  RSI {rsi} — Overbought, do not add to position")
+
+    # ATR warnings
+    atr_pct = data.get('atr_pct', 0)
+    if atr_pct > 8.0:
+        signals.append(f"🚨 HIGH ATR WARNING: ATR is {atr_pct}% (>8%). Stock is too volatile for a standard -8% stop loss!")
 
     return signals
 
