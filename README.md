@@ -38,12 +38,21 @@ pip install yfinance pandas numpy matplotlib mplfinance
 
 ## The Trading Philosophy
 
-This system enforces strict discipline:
+This system enforces strict discipline based on the ZST M1/M2 Risk Management rules:
+
 - **Never buy in a Stage 4 decline.**
-- **Never risk more than 8% on a trade.**
+- **Stop Loss placement:** The stop loss is placed at -8% below the entry price. This is the *location* of the stop, not the dollar risk.
+- **Capital at risk per trade:** The actual capital risked on any single trade must NOT exceed 1%–2% of total account equity.
+  - Formula: `Max Position Size = (Account Equity × 1%) ÷ 8%`
+  - Example: $100,000 account → Max position = $1,000 ÷ 8% = $12,500 (12.5% of capital)
+- **ATR Warning:** If a stock's daily ATR exceeds 8% of its price, the system issues a prominent warning. A stock that moves 8%+ daily will trigger a standard -8% stop loss through normal noise alone — avoid or drastically reduce size.
 - **Only buy breakouts on heavy volume (>= 1.5x average).**
-- **Only buy stocks with an RS Rating >= 80.**
+- **Only buy stocks with an RS Rating >= 80 (preferably 90+).**
 - **Prefer Stage 2 bases (first or second base after a major advance).**
+
+## Language Support
+
+This skill fully supports **Korean (한국어)**. If the user requests analysis in Korean, all reports, trader's plans, and insights will be generated in natural, professional Korean.
 
 ## Disclaimer
 
