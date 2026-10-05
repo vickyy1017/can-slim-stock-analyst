@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/e87e7d03-ebbb-40f5-9cdb-e4e4f910cc8f
+
 # Stock Analyst Agent Skill for Claude / AI Agents
 
 A professional-grade, autonomous swing trading system built for AI agents (like Claude, Manus, etc.). It transforms a general-purpose AI into a specialized quantitative and technical equity analyst.
